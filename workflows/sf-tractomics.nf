@@ -22,6 +22,8 @@ include { STATS_METRICSINROI     } from '../modules/nf-neuro/stats/metricsinroi/
 include { ATLAS_ROIMETRICS       } from '../subworkflows/nf-neuro/atlas_roimetrics/main'
 include { TRACTOMETRY            } from '../subworkflows/nf-neuro/tractometry/main'
 include { mergeCovariatesIntoMeta } from '../subworkflows/local/utils_nfcore_sf-tractomics_pipeline/main'
+include { HARMONIZATION          } from '../subworkflows/local/harmonization/main'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -207,7 +209,7 @@ workflow SF_TRACTOMICS {
         ATLAS_ROIMETRICS(
             mergeCovariatesIntoMeta(TRACTOFLOW.out.b0, ch_covariates),
             mergeCovariatesIntoMeta(ch_input_metrics, ch_covariates),
-            [ use_atlas_iit: params.use_atlas_iit ]
+            [ use_atlas_iit: params.use_atlas_iit, harmonization_reference: params.harmonization_reference ]
         )
         ch_versions = ch_versions.mix(ATLAS_ROIMETRICS.out.versions)
 
@@ -219,18 +221,18 @@ workflow SF_TRACTOMICS {
             .map{ _meta, stats_tab -> stats_tab }
             .collectFile(
                 storeDir: "${params.outdir}/metrics/",
-                name: "aggregated_atlas-iit_label-mean_desc-roi_stats.tsv",
+                name: "space-native_atlas-iit_label-mean_desc-roi_stats.tsv",
                 skip: 1,
                 keepHeader: true)
         ch_global_multiqc_files = ch_global_multiqc_files.mix(ch_collection_mean_input)
 
-        ch_collection_std_input = ATLAS_ROIMETRICS.out.stats_tab_std
-            .map{ _meta, stats_tab -> stats_tab }
-            .collectFile(
-                storeDir: "${params.outdir}/metrics/",
-                name: "aggregated_atlas-iit_label-std_desc-roi_stats.tsv",
-                skip: 1,
-                keepHeader: true)
+
+        if (params.harmonization_reference) {
+            HARMONIZATION(
+                channel.fromPath(params.harmonization_reference, checkIfExists: true),
+                ch_collection_mean_input
+            )
+        }
     }
 
     if ( params.run_tractometry ) {

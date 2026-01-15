@@ -1038,7 +1038,7 @@
             }
         },
         "atlas_roimetrics": {
-            "title": "",
+            "title": "Atlas-based ROI metrics options",
             "type": "object",
             "description": "Define the behaviour of the atlas_roimetrics subworkflow.",
             "default": "",
@@ -1075,6 +1075,20 @@
                     "default": true
                 }
             }
+        },
+        "harmonization": {
+            "title": "Harmonization options",
+            "type": "object",
+            "description": "Parameters to configure the harmonization subworkflow.",
+            "default": "",
+            "properties": {
+                "harmonization_reference": {
+                    "type": "string",
+                    "description": "TSV file of the reference site used to harmonize the current site (e.g. the output TSV from stats/metrics in roi).",
+                    "help_text": "TSV file of the reference site used to harmonize the current site (e.g. the output TSV from stats/metrics in roi)."
+                }
+            },
+            "help_text": "Parameters to configure the harmonization subworkflow."
         }
     },
     "allOf": [
@@ -1122,6 +1136,9 @@
         },
         {
             "$ref": "#/$defs/atlas_iit"
+        },
+        {
+            "$ref": "#/$defs/harmonization"
         }
     ],
     "properties": {
