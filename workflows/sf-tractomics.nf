@@ -232,6 +232,10 @@ workflow SF_TRACTOMICS {
                 channel.fromPath(params.harmonization_reference, checkIfExists: true),
                 ch_collection_mean_input
             )
+            ch_versions = ch_versions.mix(HARMONIZATION.out.versions)
+            ch_global_multiqc_files = ch_global_multiqc_files.mix(
+                HARMONIZATION.out.harmonized_metrics
+            )
         }
     }
 
