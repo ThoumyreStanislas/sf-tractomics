@@ -228,8 +228,24 @@ workflow SF_TRACTOMICS {
 
 
         if (params.harmonization_reference) {
+            // The QC expects the harmonization reference to have the following pattern: *.reference.tsv
+            // So we copy the file in the workflow workdir with the expected name pattern. If the file
+            // already has the expected name pattern, this step will simply create a copy of the file.
+            ch_harmonization_reference = channel.fromPath(params.harmonization_reference, checkIfExists: true)
+                .map{ ref_file ->
+                    def dest_name = ref_file.name.endsWith('.reference.tsv') ? ref_file.name : ref_file.name.replaceAll(/\.tsv$/, '.reference.tsv')
+                    def dest_file = file("${workflow.workDir}/${dest_name}")
+
+                    java.nio.file.Files.copy(
+                        ref_file,
+                        dest_file,
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                    )
+                    return dest_file
+                }
+
             HARMONIZATION(
-                channel.fromPath(params.harmonization_reference, checkIfExists: true),
+                ch_harmonization_reference,
                 ch_collection_mean_input
             )
             ch_versions = ch_versions.mix(HARMONIZATION.out.versions)
