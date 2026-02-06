@@ -21,8 +21,8 @@ include { REGISTRATION_ANTSAPPLYTRANSFORMS as TRANSFORM_ATLAS_BUNDLES } from '..
 include { STATS_METRICSINROI     } from '../modules/nf-neuro/stats/metricsinroi/main'
 include { ATLAS_ROIMETRICS       } from '../subworkflows/nf-neuro/atlas_roimetrics/main'
 include { TRACTOMETRY            } from '../subworkflows/nf-neuro/tractometry/main'
+include { HARMONIZATION          } from '../subworkflows/nf-neuro/harmonization/main'
 include { mergeCovariatesIntoMeta } from '../subworkflows/local/utils_nfcore_sf-tractomics_pipeline/main'
-include { HARMONIZATION          } from '../subworkflows/local/harmonization/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -209,7 +209,7 @@ workflow SF_TRACTOMICS {
         ATLAS_ROIMETRICS(
             mergeCovariatesIntoMeta(TRACTOFLOW.out.b0, ch_covariates),
             mergeCovariatesIntoMeta(ch_input_metrics, ch_covariates),
-            [ use_atlas_iit: params.use_atlas_iit, harmonization_reference: params.harmonization_reference ]
+            [ use_atlas_iit: params.use_atlas_iit ]
         )
         ch_versions = ch_versions.mix(ATLAS_ROIMETRICS.out.versions)
 
@@ -234,7 +234,9 @@ workflow SF_TRACTOMICS {
             )
             ch_versions = ch_versions.mix(HARMONIZATION.out.versions)
             ch_global_multiqc_files = ch_global_multiqc_files.mix(
-                HARMONIZATION.out.harmonized_metrics
+                HARMONIZATION.out.harmonized_stats,
+                HARMONIZATION.out.qc_plot_data_json,
+                HARMONIZATION.out.qc_reports
             )
         }
     }
