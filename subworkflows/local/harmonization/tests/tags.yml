@@ -1,2 +1,0 @@
-subworkflows/harmonization:
-  - subworkflows/nf-neuro/harmonization/**
