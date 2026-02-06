@@ -68,6 +68,3 @@ tractometry:
 
 metricsinroi:
   iqr_multiplier: 1.5
-
-metricsinroi_harmonized:
-  iqr_multiplier: 1.5
