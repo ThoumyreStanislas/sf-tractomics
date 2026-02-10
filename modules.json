@@ -92,7 +92,7 @@
                     },
                     "harmonization/clinicalcombat": {
                         "branch": "main",
-                        "git_sha": "9b5ef55432ae2d7c54d99b74e045b04ccb189cea",
+                        "git_sha": "43d0739c2920cc414373454a3f30c553e426bada",
                         "installed_by": ["harmonization"]
                     },
                     "harmonization/combat2stats": {
@@ -108,7 +108,7 @@
                     "image/applymask": {
                         "branch": "main",
                         "git_sha": "ca21922a7affe217f7391a98b5af1e50a79f094c",
-                        "installed_by": ["modules", "output_template_space"]
+                        "installed_by": ["modules", "output_template_space", "preproc_dwi"]
                     },
                     "image/convert": {
                         "branch": "main",
@@ -118,7 +118,7 @@
                     "image/cropvolume": {
                         "branch": "main",
                         "git_sha": "ca21922a7affe217f7391a98b5af1e50a79f094c",
-                        "installed_by": ["preproc_t1"]
+                        "installed_by": ["preproc_t1", "preproc_dwi"]
                     },
                     "image/math": {
                         "branch": "main",
@@ -167,7 +167,7 @@
                     },
                     "qc/multiqc": {
                         "branch": "main",
-                        "git_sha": "ca21922a7affe217f7391a98b5af1e50a79f094c",
+                        "git_sha": "43d0739c2920cc414373454a3f30c553e426bada",
                         "installed_by": ["modules"]
                     },
                     "qc/tractogram": {
