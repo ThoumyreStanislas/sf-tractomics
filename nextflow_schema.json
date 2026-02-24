@@ -135,6 +135,11 @@
             "type": "object",
             "description": "All parameters related to DWI preprocessing.",
             "properties": {
+                "run_dwi_synthstrip": {
+                    "type": "boolean",
+                    "description": "Run Synthstrip for BET DWI.",
+                    "help_text": "Run Synthstrip for BET DWI."
+                },
                 "bet_prelim_f": {
                     "type": "number",
                     "default": 0.16,
@@ -167,11 +172,6 @@
                     "type": "boolean",
                     "description": "Run Gibbs correction.",
                     "help_text": "Run Gibbs correction."
-                },
-                "run_synthstrip_dwi": {
-                    "type": "boolean",
-                    "description": "Run Synthstrip for BET DWI.",
-                    "help_text": "Run Synthstrip for BET DWI."
                 },
                 "run_topup": {
                     "type": "boolean",
@@ -246,6 +246,18 @@
                     "minimum": 0,
                     "maximum": 1
                 },
+                "run_dwi_N4": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run DWI N4 bias correction.",
+                    "help_text": "Run DWI N4 bias correction."
+                },
+                "run_dwi_normalize": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run DWI normalization.",
+                    "help_text": "Run DWI normalization."
+                },
                 "run_qball": {
                     "type": "boolean",
                     "description": "Compute Q-Ball metrics.",
@@ -269,6 +281,12 @@
                     "description": "Run T1 denoising.",
                     "help_text": "Run T1 denoising."
                 },
+               "run_t1_N4": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run T1 N4 bias correction.",
+                    "help_text": "Run T1 N4 bias correction."
+                },
                 "template_t1": {
                     "type": "string",
                     "description": "Path to the template for antsBrainExtraction. The folder must contain t1_template.nii.gz and t1_brain_probability_map.nii.gz. Defaults to the mni_152_sym_09c template directory delivered with the pipeline in the assets directory.",
@@ -282,7 +300,7 @@
             "type": "object",
             "description": "Resampling options for DWI and anatomical volumes.",
             "properties": {
-                "run_resample_dwi": {
+                "run_dwi_resampling": {
                     "type": "boolean",
                     "default": true,
                     "description": "Run resample DWI.",
@@ -302,7 +320,7 @@
                     "help_text": "DWI interpolation method",
                     "enum": ["nn", "lin", "quad", "cubic"]
                 },
-                "run_resample_t1": {
+                "run_t1_resampling": {
                     "type": "boolean",
                     "default": true,
                     "description": "Run resample T1.",
@@ -862,76 +880,6 @@
                 }
             }
         },
-        "subworkflows_hidden_options": {
-            "properties": {
-                "preproc_dwi_run_denoising": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_dwi_run_degibbs": {
-                    "type": "boolean",
-                    "hidden": true
-                },
-                "preproc_dwi_run_synthstrip": {
-                    "type": "boolean",
-                    "hidden": true
-                },
-                "topup_eddy_run_topup": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "topup_eddy_run_eddy": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_dwi_run_N4": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_denoising": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_N4": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_synthbet": {
-                    "type": "boolean",
-                    "hidden": true
-                },
-                "preproc_t1_run_ants_bet": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_crop": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_dwi_run_resampling": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_resampling": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "frf_average_from_data": {
-                    "type": "boolean",
-                    "hidden": true
-                }
-            }
-        },
         "bundleseg_options": {
             "title": "BundleSeg options",
             "type": "object",
@@ -1192,9 +1140,6 @@
         },
         {
             "$ref": "#/$defs/generic_options"
-        },
-        {
-            "$ref": "#/$defs/subworkflows_hidden_options"
         },
         {
             "$ref": "#/$defs/bundleseg_options"
