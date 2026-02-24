@@ -1062,6 +1062,12 @@
                     "description": "Use the IIT atlas for atlas-based ROI metrics.",
                     "help_text": "Use the IIT atlas for atlas-based ROI metrics.",
                     "default": true
+                },
+                "use_binary_masks": {
+                    "type": "boolean",
+                    "description": "If 'true', the IIT bundle masks will be thresholded to create binary masks before extracting the metrics.",
+                    "help_text": "IIT bundle masks will be thresholded to create binary masks before extracting the metrics.",
+                    "default": false
                 }
             }
         },
@@ -1106,7 +1112,7 @@
                     "default": null,
                     "hidden": false
                 },
-                "templateflow_res": {
+                "templateflow_resolution": {
                     "type": "integer",
                     "description": "Resolution of the template space.",
                     "help_text": "Typically 1 or 2 (mm).",
