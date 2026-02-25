@@ -1,12 +1,12 @@
 name: nf-core CI
 # This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
 on:
-  push:
-    branches:
-      - dev
-  pull_request:
-  release:
-    types: [published]
+  # push:
+  #   branches:
+  #     - dev
+  # pull_request:
+  # release:
+  #   types: [published]
   workflow_dispatch:
 
 env:
@@ -32,9 +32,9 @@ jobs:
           - "25.04.6"
           - "latest-everything"
         profile:
-          - "conda"
+          # - "conda"  # No conda in nf-neuro, to come eventually ...
           - "docker"
-          - "singularity"
+          # - "singularity" # We are able to build .sif, but not able to run singularity/apptainer containers yet ...
         test_name:
           - "test"
         isMaster:

@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/scilus/sf-tractomics/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/scilus/sf-tractomics/main/nextflow_schema.json",
     "title": "scilus/sf-tractomics pipeline parameters",
     "description": "Human diffusion MRI processing and tractography",
     "type": "object",
@@ -105,6 +105,28 @@
                     "type": "string",
                     "description": "Path to the participants.tsv file.",
                     "help_text": "Path to the participants.tsv file. If this is not specified, the participants.tsv file will be fetched automatically if the input is a BIDS directory, otherwise no additional covariates will be used."
+                },
+                "participant_label": {
+                    "type": "string",
+                    "description": "Comma-separated list of participant labels include in the processing. If specified, only these participants will be processed (unless excluded by 'exclude_participant_label').",
+                    "help_text": "Comma-separated list of participant labels include in the processing. If specified, only these participants will be processed (unless excluded by 'exclude_participant_label')."
+                },
+                "exclude_participant_label": {
+                    "type": "string",
+                    "description": "Comma-separated list of prefixes to exclude from the processing. If specified, participants with labels starting with any of these prefixes will be excluded from processing.",
+                    "help_text": "Comma-separated list of prefixes to exclude from the processing. If specified, participants with labels starting with any of these prefixes will be excluded from processing."
+                },
+                "help": {
+                    "type": ["boolean", "string"],
+                    "description": "Display the help message."
+                },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display the full detailed help message."
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
                 }
             }
         },
@@ -113,6 +135,18 @@
             "type": "object",
             "description": "All parameters related to DWI preprocessing.",
             "properties": {
+                "run_dwi_synthstrip": {
+                    "type": "boolean",
+                    "description": "Run Synthstrip for BET DWI.",
+                    "help_text": "Run Synthstrip for BET DWI."
+                },
+                "synthstrip_weights": {
+                    "type": "string",
+                    "description": "Path to the Synthstrip weights to use for BET DWI and BET T1. If not provided, default weights will be used.",
+                    "help_text": "Path to the Synthstrip weights to use for BET DWI and BET T1. If not provided, default weights will be used.",
+                    "format": "file-path",
+                    "default": null
+                },
                 "bet_prelim_f": {
                     "type": "number",
                     "default": 0.16,
@@ -143,8 +177,8 @@
                 },
                 "run_gibbs_correction": {
                     "type": "boolean",
-                    "description": "RRun Gibbs correction.",
-                    "help_text": "RRun Gibbs correction."
+                    "description": "Run Gibbs correction.",
+                    "help_text": "Run Gibbs correction."
                 },
                 "run_topup": {
                     "type": "boolean",
@@ -219,6 +253,18 @@
                     "minimum": 0,
                     "maximum": 1
                 },
+                "run_dwi_N4": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run DWI N4 bias correction.",
+                    "help_text": "Run DWI N4 bias correction."
+                },
+                "run_dwi_normalize": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run DWI normalization.",
+                    "help_text": "Run DWI normalization."
+                },
                 "run_qball": {
                     "type": "boolean",
                     "description": "Compute Q-Ball metrics.",
@@ -242,6 +288,43 @@
                     "description": "Run T1 denoising.",
                     "help_text": "Run T1 denoising."
                 },
+                "run_t1_N4": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run T1 N4 bias correction.",
+                    "help_text": "Run T1 N4 bias correction."
+                },
+                "run_t1_crop": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run T1 cropping.",
+                    "help_text": "Run T1 cropping."
+                },
+                "run_t1_ants_bet": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run T1 brain extraction using ANTs.",
+                    "help_text": "Run T1 brain extraction using ANTs."
+                },
+                "run_t1_synthstrip": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run T1 brain extraction using Synthstrip.",
+                    "help_text": "Run T1 brain extraction using Synthstrip."
+                },
+                "synthstrip_weights": {
+                    "type": "string",
+                    "description": "Path to the Synthstrip weights to use for BET DWI and BET T1. If not provided, default weights will be used.",
+                    "help_text": "Path to the Synthstrip weights to use for BET DWI and BET T1. If not provided, default weights will be used.",
+                    "format": "file-path",
+                    "default": null
+                },
+                "keep_dwi_with_skull": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Keep DWI in native space with skull for the registration to T1.",
+                    "help_text": "Keep DWI in native space with skull for the registration to T1."
+                },
                 "template_t1": {
                     "type": "string",
                     "description": "Path to the template for antsBrainExtraction. The folder must contain t1_template.nii.gz and t1_brain_probability_map.nii.gz. Defaults to the mni_152_sym_09c template directory delivered with the pipeline in the assets directory.",
@@ -255,7 +338,7 @@
             "type": "object",
             "description": "Resampling options for DWI and anatomical volumes.",
             "properties": {
-                "run_resample_dwi": {
+                "run_dwi_resampling": {
                     "type": "boolean",
                     "default": true,
                     "description": "Run resample DWI.",
@@ -275,7 +358,7 @@
                     "help_text": "DWI interpolation method",
                     "enum": ["nn", "lin", "quad", "cubic"]
                 },
-                "run_resample_t1": {
+                "run_t1_resampling": {
                     "type": "boolean",
                     "default": true,
                     "description": "Run resample T1.",
@@ -835,77 +918,6 @@
                 }
             }
         },
-        "subworkflows_hidden_options": {
-            "properties": {
-                "preproc_dwi_run_denoising": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_dwi_run_degibbs": {
-                    "type": "boolean",
-                    "hidden": true
-                },
-                "topup_eddy_run_topup": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "topup_eddy_run_eddy": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_dwi_run_N4": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_denoising": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_N4": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_synthbet": {
-                    "type": "boolean",
-                    "hidden": true
-                },
-                "preproc_t1_run_ants_bet": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_crop": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_dwi_run_resampling": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "preproc_t1_run_resampling": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                },
-                "frf_average_from_data": {
-                    "type": "boolean",
-                    "hidden": true
-                },
-                "run_pft": {
-                    "type": "boolean",
-                    "hidden": true,
-                    "default": true
-                }
-            }
-        },
         "bundleseg_options": {
             "title": "BundleSeg options",
             "type": "object",
@@ -920,6 +932,20 @@
                     "type": "string",
                     "description": "Path to the BundleSeg atlas directory.",
                     "help_text": "Path to the BundleSeg atlas directory. If not set, the default bundle_seg atlas will automatically downloaded."
+                }
+            }
+        },
+        "registration_options": {
+            "title": "Registration options",
+            "type": "object",
+            "description": "Define the registration tools to be used in the pipeline.",
+            "default": "",
+            "help_text": "Define the registration tools to be used in the pipeline.",
+            "properties": {
+                "run_easyreg": {
+                    "type": "boolean",
+                    "description": "Run freesurfer EasyReg any-to-any modality registration.",
+                    "help_text": "Needs freesurfer license."
                 },
                 "run_synthmorph": {
                     "type": "boolean",
@@ -1021,7 +1047,7 @@
             }
         },
         "atlas_roimetrics": {
-            "title": "",
+            "title": "Atlas-based ROI metrics options",
             "type": "object",
             "description": "Define the behaviour of the atlas_roimetrics subworkflow.",
             "default": "",
@@ -1056,6 +1082,77 @@
                     "description": "Use the IIT atlas for atlas-based ROI metrics.",
                     "help_text": "Use the IIT atlas for atlas-based ROI metrics.",
                     "default": true
+                },
+                "use_binary_masks": {
+                    "type": "boolean",
+                    "description": "If 'true', the IIT bundle masks will be thresholded to create binary masks before extracting the metrics.",
+                    "help_text": "IIT bundle masks will be thresholded to create binary masks before extracting the metrics.",
+                    "default": false
+                }
+            }
+        },
+        "harmonization": {
+            "title": "Harmonization options",
+            "type": "object",
+            "description": "Parameters to configure the harmonization subworkflow.",
+            "default": "",
+            "properties": {
+                "harmonization_reference": {
+                    "type": "string",
+                    "description": "TSV file of the reference site used to harmonize the current site (e.g. the output TSV from stats/metrics in roi).",
+                    "help_text": "TSV file of the reference site used to harmonize the current site (e.g. the output TSV from stats/metrics in roi)."
+                }
+            },
+            "help_text": "Parameters to configure the harmonization subworkflow."
+        },
+        "output_space": {
+            "title": "Output to different spaces options",
+            "type": "object",
+            "fa_icon": "fas fa-brain",
+            "description": "Options for outputting to specific spaces.",
+            "help_text": "These options are used to configure the output to different spaces.",
+            "properties": {
+                "output_orig_space": {
+                    "type": "boolean",
+                    "description": "If set, the results will be outputted in the T1 orig space.",
+                    "fa_icon": "fas fa-map",
+                    "help_text": "Images, masks, labels will be outputted in the T1 orig space."
+                },
+                "output_template_space": {
+                    "type": "boolean",
+                    "description": "If set, the results will be outputted in the specified template space using TemplateFlow.",
+                    "fa_icon": "fas fa-map",
+                    "help_text": "Please see their documentation for an exhaustive list (https://www.templateflow.org/browse/)"
+                },
+                "template": {
+                    "type": "string",
+                    "description": "Template space to output to. The available template are the ones supported by TemplateFlow.",
+                    "help_text": "Please see their documentation for an exhaustive list (https://www.templateflow.org/browse/)",
+                    "fa_icon": "fas fa-brain",
+                    "default": null,
+                    "hidden": false
+                },
+                "templateflow_resolution": {
+                    "type": "integer",
+                    "description": "Resolution of the template space.",
+                    "help_text": "Typically 1 or 2 (mm).",
+                    "fa_icon": "fas fa-brain",
+                    "hidden": false
+                },
+                "templateflow_cohort": {
+                    "type": "integer",
+                    "description": "Cohort to use for the template space (not required for most template, but if it is, simply provide the cohort's number).",
+                    "help_text": "Please see their documentation for an exhaustive list (https://www.templateflow.org/browse/)",
+                    "fa_icon": "fas fa-brain",
+                    "hidden": false
+                },
+                "templateflow_home": {
+                    "type": "string",
+                    "description": "Path to the TemplateFlow home directory where templates will be downloaded.",
+                    "help_text": "If you are running the pipeline without internet access, this needs to point to a folder containing predownloaded templates.",
+                    "fa_icon": "fas fa-brain",
+                    "default": "./templateflow",
+                    "hidden": false
                 }
             }
         }
@@ -1089,10 +1186,10 @@
             "$ref": "#/$defs/generic_options"
         },
         {
-            "$ref": "#/$defs/subworkflows_hidden_options"
+            "$ref": "#/$defs/bundleseg_options"
         },
         {
-            "$ref": "#/$defs/bundleseg_options"
+            "$ref": "#/$defs/registration_options"
         },
         {
             "$ref": "#/$defs/tractometry_options"
@@ -1105,6 +1202,22 @@
         },
         {
             "$ref": "#/$defs/atlas_iit"
+        },
+        {
+            "$ref": "#/$defs/harmonization"
+        },
+        {
+            "$ref": "#/$defs/output_space"
         }
-    ]
+    ],
+    "properties": {
+        "hook_url": {
+            "type": "string",
+            "description": "Hook URL to notify a web server e.g. Microsoft Teams and Slack ",
+            "help_text": "Hook URL to notify a web server e.g. Microsoft Teams and Slack "
+        },
+        "use_template_t2w": {
+            "type": "boolean"
+        }
+    }
 }
