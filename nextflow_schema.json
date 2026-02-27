@@ -1208,11 +1208,15 @@
             "help_text": "Hook URL to notify a web server e.g. Microsoft Teams and Slack "
         },
         "use_template_t2w": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Use the T2w template from TemplateFlow for registration.",
+            "help_text": "Use the T2w template from TemplateFlow for registration."
         },
         "match_t1_run": {
             "type": "boolean",
-            "default": true
+            "default": true,
+            "description": "If there's multiple T1w images for a single single DWI run, this option will try to match the T1w and DWI runs based on their run number.",
+            "help_text": "If there's multiple T1w images for a single single DWI run, this option will try to match the T1w and DWI runs based on their run number."
         }
     }
 }
