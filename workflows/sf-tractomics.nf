@@ -457,11 +457,12 @@ workflow SF_TRACTOMICS {
 
 }
 
+//
 // This function should simply collect the stats files into a single file by appending each row of the TSV/CSV files.
 // However, some files might have more or less fields in their TSV/CSV files, which can cause misalignement and
 // columns with no names. To avoid this, we read each file, build a set of all column names across all files, and
 // then write a new file with all columns, filling missing values with no value.
-// Be careful, the ch_stats_files is expected to be a nextflow channel with a list of stat files.
+//
 def collectStatsFiles(ch_stats_files, name, storeDir) {
 
     def output_file_path = "${storeDir}/${name}"
@@ -475,7 +476,7 @@ def collectStatsFiles(ch_stats_files, name, storeDir) {
             def header_written = false
             def all_columns = new LinkedHashSet()
 
-            // Check all columns.
+            // Collect all column names across all files
             stats_files.each { stats_file ->
                 def lines = file(stats_file).readLines()
                 if (lines.size() < 2) {
@@ -491,6 +492,7 @@ def collectStatsFiles(ch_stats_files, name, storeDir) {
             def output_file = file(output_file_path)
             def file_writer = output_file.newWriter()
 
+            // Read all stats files to write rows with all columns, filling missing values with no value
             stats_files.each { stats_file ->
                 def lines = file(stats_file).readLines()
                 if (lines.size() < 2) {
