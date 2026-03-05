@@ -168,9 +168,7 @@ workflow SF_TRACTOMICS {
     if ( params.run_bundle_seg ) {
         BUNDLE_SEG(
             TRACTOFLOW.out.dti_fa,
-            TRACTOFLOW.out.pft_tractogram
-                .mix(TRACTOFLOW.out.local_tractogram)
-                .groupTuple(),
+            ch_input_tracking_qc,
             channel.empty(),
             [
                 "run_easyreg": false, // BundleSeg does not support easyreg, so we set it to false to avoid confusion
