@@ -169,7 +169,7 @@ workflow SF_TRACTOMICS {
     if ( params.run_bundle_seg ) {
         BUNDLE_SEG(
             TRACTOFLOW.out.dti_fa,
-            ch_input_tracking_qc.map{ meta, trk -> [meta, [trk]] },
+            ch_input_tracking_qc.map { meta, trk -> [meta, (trk instanceof List ? trk : [trk])] },
             channel.empty(),
             [
                 "run_easyreg": false, // BundleSeg does not support easyreg, so we set it to false to avoid confusion

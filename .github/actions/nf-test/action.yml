@@ -63,7 +63,6 @@ runs:
       run: |
         nf-test test \
           --profile=+${{ inputs.profile }} \
-          --profile=+stubRun \
           $(if [ -n "${{ inputs.tags }}" ]; then echo "--tag ${{ inputs.tags }}"; fi) \
           --ci \
           --changed-since HEAD^ \
