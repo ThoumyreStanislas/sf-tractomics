@@ -52,6 +52,10 @@ workflow SF_TRACTOMICS {
     ch_bet_probability = channel.empty()
     ch_synthstrip_weights = channel.empty()
 
+    if (workflow.profile.contains('reproducible') && workflow.profile.contains('gpu')) {
+        error "\033[0;31mERROR: Profiles 'reproducible' and 'gpu' are not compatible and cannot be used together. Please remove gpu if you want reproducible results.\033[0m"
+    }
+
     /* Load topup config if provided */
     if ( params.config_topup ) {
         if ( file(params.config_topup).exists()) {
@@ -169,7 +173,7 @@ workflow SF_TRACTOMICS {
     if ( params.run_bundle_seg ) {
         BUNDLE_SEG(
             TRACTOFLOW.out.dti_fa,
-            ch_input_tracking_qc.map{ meta, trk -> [meta, [trk]] },
+            ch_input_tracking_qc.map { meta, trk -> [meta, (trk instanceof List ? trk : [trk])] },
             channel.empty(),
             [
                 "run_easyreg": false, // BundleSeg does not support easyreg, so we set it to false to avoid confusion
@@ -467,12 +471,12 @@ def collectStatsFiles(ch_stats_files, name, storeDir) {
 
     def output_file_path = "${storeDir}/${name}"
 
-    ch_stats_files = ch_stats_files
-        .map{ _meta, stats_file ->
+    return ch_stats_files
+        .map { _meta, stats_file ->
             return stats_file
         }
         .collect()
-        .subscribe { stats_files ->
+        .map { stats_files ->
             def header_written = false
             def all_columns = new LinkedHashSet()
 
@@ -518,9 +522,9 @@ def collectStatsFiles(ch_stats_files, name, storeDir) {
 
             // Close the file writer
             file_writer.close()
-        }
 
-    return channel.fromPath(output_file_path)
+            return output_file
+        }
 }
 
 /*
